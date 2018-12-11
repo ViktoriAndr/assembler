@@ -1,64 +1,81 @@
 .data
-.set N, 1000
-.set WRITE, 1
-.set READ, 0
-.set OPEN, 2
-.set CLOSE, 3
-.set STDOUT, 1
-.set O_RDONLY, 0
-.set O_WRONLY, 1
-.set EXIT, 60
 buf: .byte 0
 .global _start
 .text
+
 _start:
-		mov $0, %rcx
-		mov %rsp, %r9
-		call _offset
+    pop     %rcx  # Количество аргументов
+    pop     %rdi  # Неинтересная строка
+    dec     %rcx
+    mov     $10, %rbx  # input numbers base
+    1:
+        cmp     $0, %rcx
+        je      2f
+        pop     %rdi
+        movb     (%rdi), %dl  # считал первый символ
 
-_offset:
-		xor %r10, %r10
-		xchg 16(%r9, %rcx, 4), %r10
-		#mov 16(%r9), %r10
-		xor %rax, %rax
-		mov (%r10), %al
-		add $1, %rcx 
-
-		#cmp $0, %al
-		#jne _offset
-
-		cmp $0x0, %al
-		je _out
-
-_op:
-		cmp $0x2B, %al
+		cmp $0x2B, %dl  # +
 		je _sum
 
-		cmp $0x2D, %al
+		cmp $0x2D, %dl  # -
 		je _sub
 
-		cmp $0x2F, %al
+		cmp $0x2F, %dl  # /
 		je _div
 
-		cmp $0x2A, %al
+		cmp $0x2A, %dl  # *
 		je _mul
 
-		push %rax
-		jmp _offset
+        call str2int
+        push    %rax
+        jmp 1b
+    2:
+    # TODO print result
+    call _out
+
+str2int:
+    xor     %rax, %rax  # we will put result here
+    xor     %rcx, %rcx  # index in string
+    1:
+        movb    (%rdi, %rcx), %dl  # read current
+        cmp     $0, %dl  # check end of string
+        je      2f  # go out of loop
+        inc     %rcx
+        sub     $0x30, %dl
+        push    %rdx 
+        mul     %rbx
+        pop     %rdx
+        add     %rdx, %rax
+        jmp     1b
+    2:
+    ret
 
 _sum:
 		pop %rax
-		sub $0x30, %rax
 		pop %rbx
-		sub $0x30, %rbx
-		add %bx, %ax
-		push %rax
-		jmp _offset
-_mul:
+		add %rbx, %rax
 		ret
 _sub:
+		pop %rax
+		pop %rbx
+		sub %rbx, %rax
+		js _minus
+		ret
+_minus:
+		pop %rbx
+		pop %rax
+		sub %rbx, %rax
 		ret
 _div:
+		pop %rax
+		pop %rbx
+		div %rbx
+		ret
+
+_mul:
+		pop %rax
+		pop %rbx
+		mul %rbx
 		ret
 
 _out:
@@ -105,7 +122,3 @@ _ret:
 		mov $60, %rax
 		mov $0, %rdi
 		syscall
-
-# для запуска ./RPN 1 5 + .
-# пока есть только +, числа 1-9, в конце обязательно .
-# все аргументы через пробел
