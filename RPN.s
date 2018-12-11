@@ -1,13 +1,4 @@
 .data
-.set N, 1000
-.set WRITE, 1
-.set READ, 0
-.set OPEN, 2
-.set CLOSE, 3
-.set STDOUT, 1
-.set O_RDONLY, 0
-.set O_WRONLY, 1
-.set EXIT, 60
 buf: .byte 0
 .global _start
 .text
