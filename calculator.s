@@ -22,40 +22,40 @@ _start:
 		cmp $0x2A, %al
 		je _mul
 
-		call _printt
+		call _out
 
 _sum:
 		mov $num1, %rax
 		mov $num2, %rbx
 		add %rbx, %rax
-		jmp _printt
+		jmp _out
 
 _sub:
 		mov $num1, %rax
 		mov $num2, %rbx
 		sub %rbx, %rax
 		js _minus
-		jmp _printt
+		jmp _out
 
 _minus:
 		mov $num1, %rbx
 		mov $num2, %rax
 		sub %rbx, %rax
-		jmp _printt
+		jmp _out
 
 _div:
 		mov $num1, %rax
 		mov $num2, %rbx
 		div %rbx
-		jmp _printt
+		jmp _out
 
 _mul:
 		mov $num1, %rax
 		mov $num2, %rbx
 		mul %rbx
-		jmp _printt
+		jmp _out
 
-_printt:
+_out:
 		xor %rbx, %rbx 
 		mov $10, %rbx
 		mov $0, %rcx
