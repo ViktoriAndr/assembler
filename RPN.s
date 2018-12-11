@@ -2,7 +2,6 @@
 buf: .byte 0
 .global _start
 .text
-<<<<<<< HEAD
 
 _start:
     pop     %rcx  # Количество аргументов
@@ -14,26 +13,6 @@ _start:
         je      2f
         pop     %rdi
         movb     (%rdi), %dl  # считал первый символ
-=======
-_start:
-		mov $0, %rcx
-		mov %rsp, %r9
-		call _offset
-
-_offset:
-		xor %r10, %r10
-		xchg 16(%r9, %rcx, 4), %r10
-		#mov 16(%r9), %r10
-		xor %rax, %rax
-		mov (%r10), %al
-		add $2, %rcx 
-
-		#cmp $0, %al
-		#jne _offset
-
-		cmp $0x2E, %al
-		je _out
->>>>>>> 9ebbc383e2cd11284f77d8b89175663c5a70408e
 
 		cmp $0x2B, %dl  # +
 		je _sum
