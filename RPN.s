@@ -22,12 +22,12 @@ _offset:
 		#mov 16(%r9), %r10
 		xor %rax, %rax
 		mov (%r10), %al
-		add $1, %rcx 
+		add $2, %rcx 
 
 		#cmp $0, %al
 		#jne _offset
 
-		cmp $0x0, %al
+		cmp $0x2E, %al
 		je _out
 
 _op:
