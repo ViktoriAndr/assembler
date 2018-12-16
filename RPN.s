@@ -13,43 +13,6 @@ _start:
     	mov     $10, %rbx  # input numbers base
         pop     %rcx          # ДОСТАЕМ НЕИСПОРЧЕННЫЙ СЧЕТЧИК АРГУМЕНТОВ
         cmp     $0, %rcx
-<<<<<<< HEAD
-        # je      2f
-        je 2f
-        mov     (%r10), %rdi  # СЧИТЫВАЕМ ИЗ СТЕКА ПО НАШЕМУ УКАЗАТЕЛЮ
-        add     $8, %r10      # УВЕЛИЧИВАЕМ УКАЗАТЕЛЬ, ЧТОБЫ ОН УКАЗЫВАЛ НА ОДИН ЭЛЕМЕНТ ВЫШЕ
-        dec     %rcx          # АРГУМЕНТ СЧИТАЛИ, СЧЕТЧИК УМЕНЬШИЛИ
-        push    %rcx         
-
-        movb    (%rdi), %dl  # считал символ
-
-		cmp $0x2B, %dl  # +   
-		jne 1f
-		call _sum
-		pop %rcx
-		push %rax
-		push %rcx
-		jmp main_loop
-		1:   
-                              
-		cmp $0x2D, %dl  # -   
-		jne 1f
-		call _sub
-		pop %rcx
-		push %rax
-		push %rcx
-		jmp main_loop
-		1:
-              
-		cmp $0x2F, %dl  # /   
-		jne 1f
-		call _div
-		pop %rcx
-		push %rax
-		push %rcx
-        jmp main_loop
-        1:
-=======
         je      2f
         pop     %rdi
         movb     (%rdi), %dl  # считал первый символ
