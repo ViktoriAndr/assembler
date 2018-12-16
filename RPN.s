@@ -87,78 +87,78 @@ str2int:
     ret
 
 _sum:
-		pop %rdx  # return address
-		pop %rcx  # argument counter
-		pop %rax
-		pop %rbx
-		push %rcx # save argument counter
-		push %rdx # save return address
-		xor %rdx, %rdx
-		add %rbx, %rax
-		ret
+	pop %rdx  # return address
+	pop %rcx  # argument counter
+	pop %rax
+	pop %rbx
+	push %rcx # save argument counter
+	push %rdx # save return address
+	xor %rdx, %rdx
+	add %rbx, %rax
+	ret
 _sub:
-		pop %rdx
-		pop %rcx
-		pop %rax
-		pop %rbx
-		push %rcx
-		push %rdx
-		cmp %rbx, %rax
-		jl _minus
-		sub %rbx, %rax
-		ret
+	pop %rdx
+	pop %rcx
+	pop %rax
+	pop %rbx
+	push %rcx
+	push %rdx
+	cmp %rbx, %rax
+	jl _minus
+	sub %rbx, %rax
+	ret
 _minus:
-		sub %rax, %rbx
-		mov %rbx, %rax
-		ret
+	sub %rax, %rbx
+	mov %rbx, %rax
+	ret
 _div:
-		pop %rdx
-		pop %rcx
-		pop %rbx
-		pop %rax
-		push %rcx
-		push %rdx
-		xor %rdx, %rdx
-		div %rbx
-		ret
+	pop %rdx
+	pop %rcx
+	pop %rbx
+	pop %rax
+	push %rcx
+	push %rdx
+	xor %rdx, %rdx
+	div %rbx
+	ret
 
 _mul:
-		pop %rdx
-		pop %rcx
-		pop %rbx
-		pop %rax
-		push %rcx
-		push %rdx
-		xor %rdx, %rdx
-		mul %rbx
-		ret
+	pop %rdx
+	pop %rcx
+	pop %rbx
+	pop %rax
+	push %rcx
+	push %rdx
+	xor %rdx, %rdx
+	mul %rbx
+	ret
 
 # print value from RAX (int)
 int_print:
-		xor %rcx, %rcx
-		mov $10, %rbx
-		1:
-			xor %rdx, %rdx
-			div %rbx  # RDX ~ остаток, RAX - делитель
-			push %rdx
-			inc %rcx
-			cmp $0, %rax
-			jne 1b
-		1:
-			mov $buf, %rdx
-			pop %rax
-			add $0x30, %rax
-			movb %al, (%rdx)
-			push %rax
-			push %rbx
-			push %rcx
-			call print
-			pop %rcx
-			pop %rbx
-			pop %rax
-			dec %rcx
-			cmp $0, %rcx
-			jne 1b
+	xor %rcx, %rcx
+	mov $10, %rbx
+	1:
+		xor %rdx, %rdx
+		div %rbx  # RDX ~ остаток, RAX - делитель
+		push %rdx
+		inc %rcx
+		cmp $0, %rax
+		jne 1b
+	1:
+		mov $buf, %rdx
+		pop %rax
+		add $0x30, %rax
+		movb %al, (%rdx)
+		push %rax
+		push %rbx
+		push %rcx
+		call print
+		pop %rcx
+		pop %rbx
+		pop %rax
+		dec %rcx
+		cmp $0, %rcx
+		jne 1b
 		ret
 
 print:
