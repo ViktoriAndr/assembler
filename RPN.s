@@ -2,57 +2,72 @@
 buf: .byte 0
 .global _start
 .text
-<<<<<<< HEAD
 
 _start:
     pop     %rcx  # Количество аргументов
     pop     %rdi  # Неинтересная строка
+    mov     %rsp, %r10  # SAVE STACK POINTER
     dec     %rcx
-    mov     $10, %rbx  # input numbers base
-    1:
+    push    %rcx        
+    main_loop:
+    	mov     $10, %rbx  # input numbers base
+        pop     %rcx          # ДОСТАЕМ НЕИСПОРЧЕННЫЙ СЧЕТЧИК АРГУМЕНТОВ
         cmp     $0, %rcx
-        je      2f
-        pop     %rdi
-        movb     (%rdi), %dl  # считал первый символ
-=======
-_start:
-		mov $0, %rcx
-		mov %rsp, %r9
-		call _offset
+        # je      2f
+        je 2f
+        mov     (%r10), %rdi  # СЧИТЫВАЕМ ИЗ СТЕКА ПО НАШЕМУ УКАЗАТЕЛЮ
+        add     $8, %r10      # УВЕЛИЧИВАЕМ УКАЗАТЕЛЬ, ЧТОБЫ ОН УКАЗЫВАЛ НА ОДИН ЭЛЕМЕНТ ВЫШЕ
+        dec     %rcx          # АРГУМЕНТ СЧИТАЛИ, СЧЕТЧИК УМЕНЬШИЛИ
+        push    %rcx         
 
-_offset:
-		xor %r10, %r10
-		xchg 16(%r9, %rcx, 4), %r10
-		#mov 16(%r9), %r10
-		xor %rax, %rax
-		mov (%r10), %al
-		add $2, %rcx 
+        movb    (%rdi), %dl  # считал символ
 
-		#cmp $0, %al
-		#jne _offset
-
-		cmp $0x2E, %al
-		je _out
->>>>>>> 9ebbc383e2cd11284f77d8b89175663c5a70408e
-
-		cmp $0x2B, %dl  # +
-		je _sum
-
-		cmp $0x2D, %dl  # -
-		je _sub
-
-		cmp $0x2F, %dl  # /
-		je _div
+		cmp $0x2B, %dl  # +   
+		jne 1f
+		call _sum
+		pop %rcx
+		push %rax
+		push %rcx
+		jmp main_loop
+		1:   
+                              
+		cmp $0x2D, %dl  # -   
+		jne 1f
+		call _sub
+		pop %rcx
+		push %rax
+		push %rcx
+		jmp main_loop
+		1:
+              
+		cmp $0x2F, %dl  # /   
+		jne 1f
+		call _div
+		pop %rcx
+		push %rax
+		push %rcx
+        jmp main_loop
+        1:
 
 		cmp $0x2A, %dl  # *
-		je _mul
+		jne 1f
+		call _mul
+		pop %rcx
+		push %rax
+		push %rcx
+        jmp main_loop
+        1:
 
         call str2int
+        pop %rcx
         push    %rax
-        jmp 1b
+        push    %rcx
+        jmp main_loop
     2:
     # TODO print result
-    call _out
+    pop %rax
+    call int_print
+    call _ret
 
 str2int:
     xor     %rax, %rax  # we will put result here
@@ -72,63 +87,78 @@ str2int:
     ret
 
 _sum:
+		pop %rdx  # return address
+		pop %rcx  # argument counter
 		pop %rax
 		pop %rbx
+		push %rcx # save argument counter
+		push %rdx # save return address
+		xor %rdx, %rdx
 		add %rbx, %rax
 		ret
 _sub:
+		pop %rdx
+		pop %rcx
 		pop %rax
 		pop %rbx
+		push %rcx
+		push %rdx
+		cmp %rbx, %rax
+		jl _minus
 		sub %rbx, %rax
-		js _minus
 		ret
 _minus:
-		pop %rbx
-		pop %rax
-		sub %rbx, %rax
+		sub %rax, %rbx
+		mov %rbx, %rax
 		ret
 _div:
-		pop %rax
+		pop %rdx
+		pop %rcx
 		pop %rbx
+		pop %rax
+		push %rcx
+		push %rdx
+		xor %rdx, %rdx
 		div %rbx
 		ret
 
 _mul:
-		pop %rax
+		pop %rdx
+		pop %rcx
 		pop %rbx
+		pop %rax
+		push %rcx
+		push %rdx
+		xor %rdx, %rdx
 		mul %rbx
 		ret
 
-_out:
-		pop %rax
-		xor %rbx, %rbx 
+# print value from RAX (int)
+int_print:
+		xor %rcx, %rcx
 		mov $10, %rbx
-		mov $0, %rcx
-		call _loop1
-		call _ret
-
-_loop1:
-		cmp $0, %rax
-		je _loop2
-		xor %rdx, %rdx
-		div %rbx
-		push %rdx
-		inc %rcx
-		jmp _loop1
-		
-_loop2:
-		cmp $0, %rcx
-		je 1f
-		mov $buf, %rdx
-		pop %rax
-		add $0x30, %rax
-		mov %al, (%rdx)
-		push %rcx
-		call print
-		pop %rcx
-		dec %rcx
-		jmp _loop2
-1:
+		1:
+			xor %rdx, %rdx
+			div %rbx  # RDX ~ остаток, RAX - делитель
+			push %rdx
+			inc %rcx
+			cmp $0, %rax
+			jne 1b
+		1:
+			mov $buf, %rdx
+			pop %rax
+			add $0x30, %rax
+			movb %al, (%rdx)
+			push %rax
+			push %rbx
+			push %rcx
+			call print
+			pop %rcx
+			pop %rbx
+			pop %rax
+			dec %rcx
+			cmp $0, %rcx
+			jne 1b
 		ret
 
 print:
