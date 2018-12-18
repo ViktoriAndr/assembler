@@ -1,6 +1,7 @@
 .data
 buf: .byte 0
-str_error: .string "error\n"
+str_error: .string "error"
+nl: .byte 13,10
 .global _start
 .text
 
@@ -168,22 +169,28 @@ int_print:
 		ret
 
 _error:
-		mov 	$1, %rax
-		mov 	$1, %rdi
-		mov 	$str_error, %rsi
-		mov 	$7, %rdx
-		syscall
-		jmp _ret
+	mov 	$1, %rax
+	mov 	$1, %rdi
+	mov 	$str_error, %rsi
+	mov 	$5, %rdx
+	syscall
+	jmp _ret
 
 print:
-		mov 	$1, %rax
-		mov 	$1, %rdi
-		mov 	$buf, %rsi
-		mov 	$1, %rdx
-		syscall
-		ret
+	mov 	$1, %rax
+	mov 	$1, %rdi
+	mov 	$buf, %rsi
+	mov 	$1, %rdx
+	syscall
+	ret
 
 _ret:
-		mov 	$60, %rax
-		mov 	$0, %rdi
-		syscall
+    	mov     $1, %rax # перевод строки
+    	mov     $1, %rdi
+    	mov     $nl, %rsi
+    	mov     $2, %rdx
+    	syscall
+
+	mov 	$60, %rax # выход
+	mov 	$0, %rdi
+	syscall
