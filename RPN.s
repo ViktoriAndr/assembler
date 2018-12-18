@@ -23,47 +23,47 @@ _start:
 
         movb    (%rdi), %dl  # считал символ
 
-		cmp 	$0x2B, %dl  # +   
-		jne 	1f
-		call _sum
-		pop 	%rcx
-		push 	%rax
-		push 	%rcx
-		jmp main_loop
-		1:   
-                             
-		cmp 	$0x2D, %dl  # -   
-		jne 	1f
-		call _sub
-		pop 	%rcx
-		push 	%rax
-		push 	%rcx
-		jmp main_loop
-		1:
+	cmp 	$0x2B, %dl  # +   
+	jne 	1f
+	call _sum
+	pop 	%rcx
+	push 	%rax
+	push 	%rcx
+	jmp main_loop
+	1:   
+                            
+	cmp 	$0x2D, %dl  # -   
+	jne 	1f
+	call _sub
+	pop 	%rcx
+	push 	%rax
+	push 	%rcx
+	jmp main_loop
+	1:
 	            
-		cmp 	$0x2F, %dl  # /   
-		jne 1f
-		call _div
-		pop 	%rcx
-		push	%rax
-		push	%rcx
-	    jmp main_loop
-	    1:
+	cmp 	$0x2F, %dl  # /   
+	jne 1f
+	call _div
+	pop 	%rcx
+	push	%rax
+	push	%rcx
+	jmp main_loop
+	1:
 
-		cmp 	$0x2A, %dl  # *
-		jne 1f
-		call _mul
-		pop 	%rcx
-		push 	%rax
-		push 	%rcx
-	    jmp main_loop
-	    1:
+	cmp 	$0x2A, %dl  # *
+	jne 1f
+	call _mul
+	pop 	%rcx
+	push 	%rax
+	push 	%rcx
+	jmp main_loop
+	1:
 
-	    call str2int  # получили аргумент
-	    pop %rcx
-	    push    %rax
-	    push    %rcx
-	    jmp main_loop
+	call str2int  # получили аргумент
+	pop %rcx
+	push    %rax
+	push    %rcx
+	jmp main_loop
 	    
     2:
     	# TODO print result
